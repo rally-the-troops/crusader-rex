@@ -589,11 +589,11 @@ function update_map() {
 
 function update_card_display(element, card, prior_card) {
 	if (!card && !prior_card) {
-		element.className = "small_card card_back";
+		element.className = "show card card_back";
 	} else if (prior_card) {
-		element.className = "small_card prior " + CARDS[prior_card].image;
+		element.className = "show card prior " + CARDS[prior_card].image;
 	} else {
-		element.className = "small_card " + CARDS[card].image;
+		element.className = "show card " + CARDS[card].image;
 	}
 }
 
@@ -759,17 +759,17 @@ function start_flash() {
 }
 
 function on_update() {
-	action_button("eliminate_button", "Eliminate");
-	action_button("winter_campaign_button", "Winter campaign");
-	action_button("sea_move_button", "Sea move");
-	action_button("end_sea_move_button", "End sea move");
-	action_button("group_move_button", "Group move");
-	action_button("end_group_move_button", "End group move");
-	action_button("muster_button", "Muster");
-	action_button("end_muster_button", "End muster");
-	action_button("end_retreat_button", "End retreat");
-	action_button("end_regroup_button", "End regroup");
-	action_button("end_move_phase_button", "End move phase");
+	action_button("eliminate", "Eliminate");
+	action_button("winter_campaign", "Winter campaign");
+	action_button("sea_move", "Sea move");
+	action_button("end_sea_move", "End sea move");
+	action_button("group_move", "Group move");
+	action_button("end_group_move", "End group move");
+	action_button("muster", "Muster");
+	action_button("end_muster", "End muster");
+	action_button("end_retreat", "End retreat");
+	action_button("end_regroup", "End regroup");
+	action_button("end_move_phase", "End move phase");
 	action_button("pass", "Pass");
 	action_button("next", "Next");
 	action_button("undo", "Undo");
