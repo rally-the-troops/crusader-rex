@@ -1644,8 +1644,8 @@ states.move_phase = {
 		game.state = 'muster';
 	},
 	block: function (who) {
-		game.summary = [];
 		push_undo();
+		game.summary = [];
 		game.who = who;
 		game.where = game.location[who];
 		if (game.where === GERMANIA) {
@@ -3552,9 +3552,9 @@ states.winter_replacements = {
 		}
 	},
 	block: function (who) {
+		push_undo();
 		let where = game.location[who];
 		let cost = replacement_cost(where);
-		push_undo();
 		game.summary.push([where]);
 		game.steps[who] ++;
 		game.rp[where] -= cost;
