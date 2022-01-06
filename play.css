@@ -3,8 +3,8 @@ aside { background-color: silver; }
 header { background-color: gainsboro; }
 body.Franks header.your_turn { background-color: #f7de46; /* 50% mix of khaki and gold */ }
 body.Saracens header.your_turn { background-color: lightgreen; }
-.one .role_name { background-color: khaki; }
-.two .role_name { background-color: darkseagreen; }
+#role_Franks .role_name { background-color: khaki; }
+#role_Saracens .role_name { background-color: darkseagreen; }
 #turn_info { background-color: gainsboro; }
 
 #log { background-color: whitesmoke; }
@@ -277,9 +277,9 @@ body.shift .block.known:hover {
 #FF, #FC, #FR, #EF, #EC, #ER { margin: 0px auto; padding: 5px; }
 #EC { margin-bottom: 10px; }
 #FC { margin-bottom: 5px; }
-#EC .battle_menu_list { min-height: 0; }
-#ER .battle_menu_list { min-height: 0; }
-#FR .battle_menu_list { min-height: 0; }
+body:not(.replay) #EC .battle_menu_list { min-height: 0; }
+body:not(.replay) #ER .battle_menu_list { min-height: 0; }
+body:not(.replay) #FR .battle_menu_list { min-height: 0; }
 
 #FC, #EC {
 	background-size: cover;

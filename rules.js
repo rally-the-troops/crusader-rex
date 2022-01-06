@@ -165,7 +165,7 @@ function clear_undo() {
 
 function push_undo() {
 	game.undo.push(JSON.stringify(game, (k,v) => {
-		if (k === 'undo') return undefined;
+		if (k === 'undo') return 0;
 		if (k === 'log') return v.length;
 		return v;
 	}));
@@ -174,7 +174,7 @@ function push_undo() {
 function pop_undo() {
 	let undo = game.undo;
 	let save_log = game.log;
-	Object.assign(game, JSON.parse(undo.pop()));
+	game = JSON.parse(undo.pop());
 	game.undo = undo;
 	save_log.length = game.log;
 	game.log = save_log;
@@ -3737,7 +3737,7 @@ exports.action = function (state, current, action, arg) {
 		S[action](arg, current);
 	else
 		throw new Error("Invalid action: " + action);
-	return state;
+	return game;
 }
 
 exports.resign = function (state, current) {
@@ -3750,7 +3750,7 @@ exports.resign = function (state, current) {
 		game.victory = current + " resigned.";
 		game.result = enemy(current);
 	}
-	return state;
+	return game;
 }
 
 function make_siege_view() {
@@ -3767,6 +3767,8 @@ function observer_hand() {
 	hand.fill(0);
 	return hand;
 }
+
+exports.is_checkpoint = (a, b) => a.turn !== b.turn;
 
 exports.view = function(state, current) {
 	game = state;
@@ -3786,7 +3788,6 @@ exports.view = function(state, current) {
 		location: game.location,
 		castle: game.castle,
 		steps: game.steps,
-		reserves: game.reserves1.concat(game.reserves2),
 		moved: game.moved,
 		sieges: make_siege_view(),
 		battle: null,

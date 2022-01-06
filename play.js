@@ -110,7 +110,7 @@ function block_owner(who) { return BLOCKS[who].owner; }
 
 function on_focus_map_block(evt) {
 	let info = BLOCKS[evt.target.block];
-	let where = game.location[evt.target.block];
+	let where = view.location[evt.target.block];
 	if ((info.owner === player || info.owner === ASSASSINS) && where !== S_POOL && where !== F_POOL) {
 		let text = info.name + " ";
 		if (info.move)
@@ -128,7 +128,7 @@ function on_blur_map_block(evt) {
 
 function on_click_map_block(evt) {
 	let b = evt.target.block;
-	if (!game.battle)
+	if (!view.battle)
 		send_action('block', b);
 }
 
@@ -145,15 +145,15 @@ function on_focus_battle_block(evt) {
 		msg = block_name(b);
 	}
 
-	if (game.actions && game.actions.fire && game.actions.fire.includes(b))
+	if (view.actions && view.actions.fire && view.actions.fire.includes(b))
 		msg = "Fire with " + msg;
-	else if (game.actions && game.actions.storm && game.actions.storm.includes(b))
+	else if (view.actions && view.actions.storm && view.actions.storm.includes(b))
 		msg = "Storm with " + msg;
-	else if (game.actions && game.actions.sally && game.actions.sally.includes(b))
+	else if (view.actions && view.actions.sally && view.actions.sally.includes(b))
 		msg = "Sally with " + msg;
-	else if (game.actions && game.actions.withdraw && game.actions.withdraw.includes(b))
+	else if (view.actions && view.actions.withdraw && view.actions.withdraw.includes(b))
 		msg = "Withdraw with " + msg;
-	else if (game.actions && game.actions.hit && game.actions.hit.includes(b))
+	else if (view.actions && view.actions.hit && view.actions.hit.includes(b))
 		msg = "Take hit on " + msg;
 
 	document.getElementById("status").textContent = msg;
@@ -174,7 +174,7 @@ function on_focus_fire(evt) {
 }
 
 function on_focus_retreat(evt) {
-	if (game.battle.storming.includes(evt.target.block))
+	if (view.battle.storming.includes(evt.target.block))
 		document.getElementById("status").textContent =
 			"Withdraw with " + block_name(evt.target.block);
 	else
@@ -469,22 +469,12 @@ function hide_block(element) {
 		ui.offmap_element.appendChild(element);
 }
 
-function show_block(element) {
-	if (element.parentElement !== ui.blocks_element)
-		ui.blocks_element.appendChild(element);
-}
-
-function hide_block(element) {
-	if (element.parentElement !== ui.offmap_element)
-		ui.offmap_element.appendChild(element);
-}
-
 function is_known_block(info, who) {
-	if (game_over)
+	if (view.game_over)
 		return true;
-	if (info.owner === player || info.owner === ASSASSINS || who === game.assassinate)
+	if (info.owner === player || info.owner === ASSASSINS || who === view.assassinate)
 		return true;
-	let town = game.location[who];
+	let town = view.location[who];
 	if (town === DEAD)
 		return true;
 	return false;
@@ -493,47 +483,47 @@ function is_known_block(info, who) {
 function update_map() {
 	let layout = {};
 
-	document.getElementById("frank_vp").textContent = game.f_vp + " VP";
-	document.getElementById("saracen_vp").textContent = game.s_vp + " VP";
-	document.getElementById("timeline").className = "year_" + game.year;
-	if (game.turn < 1)
+	document.getElementById("frank_vp").textContent = view.f_vp + " VP";
+	document.getElementById("saracen_vp").textContent = view.s_vp + " VP";
+	document.getElementById("timeline").className = "year_" + view.year;
+	if (view.turn < 1)
 		document.getElementById("turn_info").textContent =
-			"Year " + game.year;
-	else if (game.turn < 6)
+			"Year " + view.year;
+	else if (view.turn < 6)
 		document.getElementById("turn_info").textContent =
-			"Turn " + game.turn + " of Year " + game.year;
+			"Turn " + view.turn + " of Year " + view.year;
 	else
 		document.getElementById("turn_info").textContent =
-			"Winter Turn of Year " + game.year;
+			"Winter Turn of Year " + view.year;
 
 	for (let town in TOWNS)
 		layout[town] = { north: [], south: [] };
 
-	for (let b in game.location) {
+	for (let b in view.location) {
 		let info = BLOCKS[b];
 		let element = ui.blocks[b];
-		let town = game.location[b];
+		let town = view.location[b];
 		if (town in TOWNS) {
-			let moved = game.moved[b] ? " moved" : "";
+			let moved = view.moved[b] ? " moved" : "";
 			if (town === DEAD)
 				moved = " moved";
 			if (is_known_block(info, b)) {
 				let image = " block_" + info.image;
-				let steps = " r" + (info.steps - game.steps[b]);
+				let steps = " r" + (info.steps - view.steps[b]);
 				let known = " known";
-				if ((town === S_POOL || town === F_POOL) && b !== game.who && !game_over)
+				if ((town === S_POOL || town === F_POOL) && b !== view.who && !view.game_over)
 					known = "";
 				element.classList = info.owner + known + " block" + image + steps + moved;
 			} else {
 				let besieging = "";
-				if (game.sieges[town] === info.owner) {
-					if (game.winter_campaign === town)
+				if (view.sieges[town] === info.owner) {
+					if (view.winter_campaign === town)
 						besieging = " winter_campaign";
 					else
 						besieging = " besieging";
 				}
 				let jihad = "";
-				if (game.jihad === town && info.owner === game.p1)
+				if (view.jihad === town && info.owner === view.p1)
 					jihad = " jihad";
 				element.classList = info.owner + " block" + moved + besieging + jihad;
 			}
@@ -549,10 +539,10 @@ function update_map() {
 		}
 	}
 
-	for (let b in game.location) {
+	for (let b in view.location) {
 		let info = BLOCKS[b];
 		let element = ui.blocks[b];
-		let town = game.location[b];
+		let town = view.location[b];
 		if (town === DEAD) {
 			if (info.owner === FRANKS)
 				layout[F_POOL].north.unshift(element);
@@ -570,20 +560,20 @@ function update_map() {
 			ui.towns[where].classList.remove('muster');
 		}
 	}
-	if (game.actions && game.actions.town)
-		for (let where of game.actions.town)
+	if (view.actions && view.actions.town)
+		for (let where of view.actions.town)
 			ui.towns[where].classList.add('highlight');
-	if (game.muster)
-		ui.towns[game.muster].classList.add('muster');
+	if (view.muster)
+		ui.towns[view.muster].classList.add('muster');
 
-	if (!game.battle) {
-		if (game.actions && game.actions.block)
-			for (let b of game.actions.block)
+	if (!view.battle) {
+		if (view.actions && view.actions.block)
+			for (let b of view.actions.block)
 				ui.blocks[b].classList.add('highlight');
 	}
-	if (game.who && !game.battle)
-		ui.blocks[game.who].classList.add('selected');
-	for (let b of game.castle)
+	if (view.who && !view.battle)
+		ui.blocks[view.who].classList.add('selected');
+	for (let b of view.castle)
 		ui.blocks[b].classList.add('castle');
 }
 
@@ -598,15 +588,15 @@ function update_card_display(element, card, prior_card) {
 }
 
 function update_cards() {
-	update_card_display(document.getElementById("frank_card"), game.f_card, game.prior_f_card);
-	update_card_display(document.getElementById("saracen_card"), game.s_card, game.prior_s_card);
+	update_card_display(document.getElementById("frank_card"), view.f_card, view.prior_f_card);
+	update_card_display(document.getElementById("saracen_card"), view.s_card, view.prior_s_card);
 
 	for (let c = 1; c <= 27; ++c) {
 		let element = ui.cards[c];
-		if (game.hand.includes(c)) {
+		if (view.hand.includes(c)) {
 			element.classList.add("show");
-			if (game.actions && game.actions.play) {
-				if (game.actions.play.includes(c)) {
+			if (view.actions && view.actions.play) {
+				if (view.actions.play.includes(c)) {
 					element.classList.add("enabled");
 					element.classList.remove("disabled");
 				} else {
@@ -622,14 +612,12 @@ function update_cards() {
 		}
 	}
 
-	if (player === 'Observer') {
-		let n = game.hand.length;
-		for (let c = 1; c <= 6; ++c)
-			if (c <= n)
-				ui.card_backs[c].classList.add("show");
-			else
-				ui.card_backs[c].classList.remove("show");
-	}
+	let n = view.hand.length;
+	for (let c = 1; c <= 6; ++c)
+		if (c <= n && player === 'Observer')
+			ui.card_backs[c].classList.add("show");
+		else
+			ui.card_backs[c].classList.remove("show");
 }
 
 function compare_blocks(a, b) {
@@ -664,47 +652,47 @@ function update_battle() {
 				insert_battle_block(cell, ui.battle_menu[block], block);
 
 			ui.battle_menu[block].className = "battle_menu";
-			if (game.actions && game.actions.fire && game.actions.fire.includes(block))
+			if (view.actions && view.actions.fire && view.actions.fire.includes(block))
 				ui.battle_menu[block].classList.add('fire');
-			if (game.actions && game.actions.retreat && game.actions.retreat.includes(block))
+			if (view.actions && view.actions.retreat && view.actions.retreat.includes(block))
 				ui.battle_menu[block].classList.add('retreat');
-			if (game.actions && game.actions.harry && game.actions.harry.includes(block))
+			if (view.actions && view.actions.harry && view.actions.harry.includes(block))
 				ui.battle_menu[block].classList.add('harry');
-			if (game.actions && game.actions.charge && game.actions.charge.includes(block))
+			if (view.actions && view.actions.charge && view.actions.charge.includes(block))
 				ui.battle_menu[block].classList.add('charge');
-			if (game.actions && game.actions.withdraw && game.actions.withdraw.includes(block))
+			if (view.actions && view.actions.withdraw && view.actions.withdraw.includes(block))
 				ui.battle_menu[block].classList.add('withdraw');
-			if (game.actions && game.actions.storm && game.actions.storm.includes(block))
+			if (view.actions && view.actions.storm && view.actions.storm.includes(block))
 				ui.battle_menu[block].classList.add('storm');
-			if (game.actions && game.actions.sally && game.actions.sally.includes(block))
+			if (view.actions && view.actions.sally && view.actions.sally.includes(block))
 				ui.battle_menu[block].classList.add('sally');
-			if (game.actions && game.actions.charge && game.actions.charge.includes(block))
+			if (view.actions && view.actions.charge && view.actions.charge.includes(block))
 				ui.battle_menu[block].classList.add('charge');
-			if (game.actions && game.actions.treachery && game.actions.treachery.includes(block))
+			if (view.actions && view.actions.treachery && view.actions.treachery.includes(block))
 				ui.battle_menu[block].classList.add('treachery');
-			if (game.actions && game.actions.hit && game.actions.hit.includes(block))
+			if (view.actions && view.actions.hit && view.actions.hit.includes(block))
 				ui.battle_menu[block].classList.add('hit');
 
 			let class_name = battle_block_class_name(BLOCKS[block]);
-			if (game.actions && game.actions.block && game.actions.block.includes(block))
+			if (view.actions && view.actions.block && view.actions.block.includes(block))
 				class_name += " highlight";
-			if (game.moved[block])
+			if (view.moved[block])
 				class_name += " moved";
-			if (block === game.who)
+			if (block === view.who)
 				class_name += " selected";
-			if (block === game.battle.halfhit)
+			if (block === view.battle.halfhit)
 				class_name += " halfhit";
-			if (game.jihad === game.battle.town && block_owner(block) === game.p1)
+			if (view.jihad === view.battle.town && block_owner(block) === view.p1)
 				class_name += " jihad";
 
-			if (game.battle.sallying.includes(block))
+			if (view.battle.sallying.includes(block))
 				show = true;
-			if (game.battle.storming.includes(block))
+			if (view.battle.storming.includes(block))
 				show = true;
 			if (show || block_owner(block) === player) {
 				class_name += " known";
 				ui.battle_block[block].className = class_name;
-				update_steps(block, game.steps[block], ui.battle_block[block], false);
+				update_steps(block, view.steps[block], ui.battle_block[block], false);
 			} else {
 				ui.battle_block[block].className = class_name;
 			}
@@ -720,23 +708,23 @@ function update_battle() {
 	}
 
 	if (player === FRANKS) {
-		fill_cell("ER", game.battle.SR, false);
-		fill_cell("EC", game.battle.SC, game.battle.show_castle);
-		fill_cell("EF", game.battle.SF, game.battle.show_field);
-		fill_cell("FF", game.battle.FF, game.battle.show_field);
-		fill_cell("FC", game.battle.FC, game.battle.show_castle);
-		fill_cell("FR", game.battle.FR, false);
-		document.getElementById("FC").className = "c" + game.battle.FCS;
-		document.getElementById("EC").className = "c" + game.battle.SCS;
+		fill_cell("ER", view.battle.SR, false);
+		fill_cell("EC", view.battle.SC, view.battle.show_castle);
+		fill_cell("EF", view.battle.SF, view.battle.show_field);
+		fill_cell("FF", view.battle.FF, view.battle.show_field);
+		fill_cell("FC", view.battle.FC, view.battle.show_castle);
+		fill_cell("FR", view.battle.FR, false);
+		document.getElementById("FC").className = "c" + view.battle.FCS;
+		document.getElementById("EC").className = "c" + view.battle.SCS;
 	} else {
-		fill_cell("ER", game.battle.FR, false);
-		fill_cell("EC", game.battle.FC, game.battle.show_castle);
-		fill_cell("EF", game.battle.FF, game.battle.show_field);
-		fill_cell("FF", game.battle.SF, game.battle.show_field);
-		fill_cell("FC", game.battle.SC, game.battle.show_castle);
-		fill_cell("FR", game.battle.SR, false);
-		document.getElementById("EC").className = "c" + game.battle.FCS;
-		document.getElementById("FC").className = "c" + game.battle.SCS;
+		fill_cell("ER", view.battle.FR, false);
+		fill_cell("EC", view.battle.FC, view.battle.show_castle);
+		fill_cell("EF", view.battle.FF, view.battle.show_field);
+		fill_cell("FF", view.battle.SF, view.battle.show_field);
+		fill_cell("FC", view.battle.SC, view.battle.show_castle);
+		fill_cell("FR", view.battle.SR, false);
+		document.getElementById("EC").className = "c" + view.battle.FCS;
+		document.getElementById("FC").className = "c" + view.battle.SCS;
 	}
 }
 
@@ -747,12 +735,12 @@ function start_flash() {
 	if (flash_timer)
 		return;
 	flash_timer = setInterval(function () {
-		if (!game.flash_next) {
-			element.textContent = game.battle ? game.battle.flash : "";
+		if (!view.flash_next) {
+			element.textContent = view.battle ? view.battle.flash : "";
 			clearInterval(flash_timer);
 			flash_timer = 0;
 		} else {
-			element.textContent = tick ? game.battle.flash : game.flash_next;
+			element.textContent = tick ? view.battle.flash : view.flash_next;
 			tick = !tick;
 		}
 	}, 1000);
@@ -774,16 +762,16 @@ function on_update() {
 	action_button("next", "Next");
 	action_button("undo", "Undo");
 
-	document.getElementById("frank_vp").textContent = game.f_vp;
-	document.getElementById("saracen_vp").textContent = game.s_vp;
+	document.getElementById("frank_vp").textContent = view.f_vp;
+	document.getElementById("saracen_vp").textContent = view.s_vp;
 
 	update_cards();
 	update_map();
 
-	if (game.battle) {
-		document.getElementById("battle_header").textContent = game.battle.title;
-		document.getElementById("battle_message").textContent = game.battle.flash;
-		if (game.flash_next)
+	if (view.battle) {
+		document.getElementById("battle_header").textContent = view.battle.title;
+		document.getElementById("battle_message").textContent = view.battle.flash;
+		if (view.flash_next)
 			start_flash();
 		document.getElementById("battle").classList.add("show");
 		update_battle();
@@ -796,6 +784,3 @@ build_map();
 
 drag_element_with_mouse("#battle", "#battle_header");
 scroll_with_middle_mouse("main", 3);
-init_map_zoom();
-init_shift_zoom();
-init_client(["Franks", "Saracens"]);
