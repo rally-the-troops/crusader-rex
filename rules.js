@@ -1190,14 +1190,18 @@ function resume_play_card() {
 
 states.play_card = {
 	prompt: function (view, current) {
-		if (current === OBSERVER)
+		if (current === OBSERVER) {
+			view.prior_s_card = game.prior_s_card;
+			view.prior_f_card = game.prior_f_card;
 			return view.prompt = "Card Phase: Waiting for players to play a card.";
+		}
 		if (current === FRANKS) {
 			view.prior_s_card = game.prior_s_card;
 			if (game.f_card) {
 				view.prompt = "Card Phase: Waiting for Saracens to play a card.";
 				gen_action(view, 'undo');
 			} else {
+				view.prior_f_card = game.prior_f_card;
 				view.prompt = "Card Phase: Play a card.";
 				for (let c of game.f_hand)
 					if (game.turn > 1 || c !== INTRIGUE)
@@ -1210,6 +1214,7 @@ states.play_card = {
 				view.prompt = "Card Phase: Waiting for Franks to play a card.";
 				gen_action(view, 'undo');
 			} else {
+				view.prior_s_card = game.prior_s_card;
 				view.prompt = "Card Phase: Play a card.";
 				for (let c of game.s_hand)
 					if (game.turn > 1 || c !== INTRIGUE)
