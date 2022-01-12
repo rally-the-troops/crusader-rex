@@ -469,13 +469,14 @@ function hide_block(element) {
 		ui.offmap_element.appendChild(element);
 }
 
-function is_known_block(info, who) {
-	if (view.game_over)
+function is_known_block(info, who, town) {
+	if (view.game_over && player === 'Observer')
 		return true;
-	if (info.owner === player || info.owner === ASSASSINS || who === view.assassinate)
-		return true;
-	let town = view.location[who];
 	if (town === DEAD)
+		return true;
+	if ((town === S_POOL || town === F_POOL) && who !== view.who)
+		return false;
+	if (info.owner === player || info.owner === ASSASSINS || who === view.assassinate)
 		return true;
 	return false;
 }
@@ -507,12 +508,10 @@ function update_map() {
 			let moved = view.moved[b] ? " moved" : "";
 			if (town === DEAD)
 				moved = " moved";
-			if (is_known_block(info, b)) {
+			if (is_known_block(info, b, town)) {
 				let image = " block_" + info.image;
 				let steps = " r" + (info.steps - view.steps[b]);
 				let known = " known";
-				if ((town === S_POOL || town === F_POOL) && b !== view.who && !view.game_over)
-					known = "";
 				element.classList = info.owner + known + " block" + image + steps + moved;
 			} else {
 				let besieging = "";
