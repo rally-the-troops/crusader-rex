@@ -2961,13 +2961,21 @@ states.field_battle_hits = {
 	block: apply_field_battle_hit,
 }
 
-function apply_field_battle_hit(who) {
+function apply_field_battle_hit_to(who, flash) {
+	let msg;
 	if (block_plural(who))
-		game.flash = block_name(who) + " take a hit.";
+		msg = block_name(who) + " take a hit.";
 	else
-		game.flash = block_name(who) + " takes a hit.";
-	reduce_block(who, 'combat');
+		msg = block_name(who) + " takes a hit.";
+	log(game.active[0] + ": " + msg);
+	if (flash)
+		game.flash = msg;
+	reduce_block(who);
 	game.hits--;
+}
+
+function apply_field_battle_hit(who) {
+	apply_field_battle_hit_to(who, true);
 	if (game.hits === 0)
 		resume_field_battle();
 	else {
@@ -3019,22 +3027,35 @@ states.siege_battle_hits = {
 	block: apply_siege_battle_hit,
 }
 
-function apply_siege_battle_hit(who) {
+function apply_siege_battle_hit_to(who, flash) {
+	let msg;
 	if (block_plural(who))
-		game.flash = block_name(who) + " take a hit.";
+		msg = block_name(who) + " take a ";
 	else
-		game.flash = block_name(who) + " takes a hit.";
+		msg = block_name(who) + " takes a ";
 	if (game.halfhit === who) {
-		reduce_block(who, 'combat');
+		msg += "hit.";
+		log(game.active[0] + ": " + msg);
+		reduce_block(who);
 		game.halfhit = null;
 	} else {
-		if (is_block_in_castle(who))
+		if (is_block_in_castle(who)) {
+			msg += "half-hit.";
+			log(game.active[0] + ": " + msg);
 			game.halfhit = who;
-		else
-			reduce_block(who, 'combat');
+		} else {
+			msg += "hit.";
+			log(game.active[0] + ": " + msg);
+			reduce_block(who);
+		}
 	}
+	if (flash)
+		game.flash = msg;
 	game.hits--;
+}
 
+function apply_siege_battle_hit(who) {
+	apply_siege_battle_hit_to(who, true);
 	if (game.hits === 0) {
 		resume_siege_battle();
 	} else {
