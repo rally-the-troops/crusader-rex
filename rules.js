@@ -659,13 +659,24 @@ function is_pinned(who, from) {
 function can_block_use_road(from, to) {
 	if (game.active === game.guide) {
 		switch (road_type(from, to)) {
-		case 'major': return road_limit(from, to) < 8;
-		case 'minor': return road_limit(from, to) < 4;
+		case 'iron-bridge':
+			// https://boardgamegeek.com/thread/744750/20-rules-iron-bridge-question
+		case 'major':
+			return road_limit(from, to) < 8;
+		case 'minor':
+			return road_limit(from, to) < 4;
 		}
 	} else {
 		switch (road_type(from, to)) {
-		case 'major': return road_limit(from, to) < 4;
-		case 'minor': return road_limit(from, to) < 2;
+		case 'iron-bridge':
+			if (game.iron_bridge)
+				return road_limit(from, to) < 3;
+			else
+				return road_limit(from, to) < 4;
+		case 'major':
+			return road_limit(from, to) < 4;
+		case 'minor':
+			return road_limit(from, to) < 2;
 		}
 	}
 	return false;
@@ -3752,6 +3763,8 @@ exports.setup = function (seed, scenario, options) {
 		where: null,
 		undo: [],
 	}
+	if (options && options.iron_bridge)
+		game.iron_bridge = 1;
 	setup_game();
 	return game;
 }

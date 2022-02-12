@@ -337,10 +337,11 @@ const PORTS = [];
 		TOWNS[B].exits.push(A);
 	}
 
+	function iron_bridge(A,B) { road(A,B,"iron-bridge"); }
 	function major(A,B) { road(A,B,"major"); }
 	function minor(A,B) { road(A,B,"minor"); }
 
-	major("Antioch", "Harim");
+	iron_bridge("Antioch", "Harim");
 	major("Harim", "Artah");
 	major("Artah", "Aleppo");
 	major("Aleppo", "Zerdana");
