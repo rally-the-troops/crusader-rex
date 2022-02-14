@@ -12,6 +12,11 @@ exports.scenarios = [
 	"Standard"
 ];
 
+exports.roles = [
+	"Franks",
+	"Saracens",
+];
+
 const { CARDS, BLOCKS, TOWNS, PORTS, ROADS, SHIELDS } = require('./data');
 
 const FRANKS = "Franks";
