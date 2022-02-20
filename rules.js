@@ -3768,8 +3768,11 @@ exports.setup = function (seed, scenario, options) {
 		where: null,
 		undo: [],
 	}
-	if (options && options.iron_bridge)
+	if (options && options.iron_bridge) {
 		game.iron_bridge = 1;
+		log("Iron Bridge:\nThe road between Antioch and Harim has a move limit of 3.");
+		log("");
+	}
 	setup_game();
 	return game;
 }
