@@ -3353,6 +3353,8 @@ states.draw_phase = {
 				game.steps[game.who] = 1;
 		} else {
 			game.steps[game.who] = block_max_steps(game.who);
+			if (can_enter_besieged_port(where))
+				game.castle.push(game.who);
 		}
 
 		game.who = null;
