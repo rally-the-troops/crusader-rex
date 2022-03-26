@@ -85,8 +85,16 @@ body.Saracens header.your_turn { background-color: lightgreen; }
 #map {
 	width: 1275px;
 	height: 2475px;
-	background-repeat: no-repeat;
 	background-color: #224467;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+html.avif #map { background-image: url("map.1x.avif") }
+html.jpeg #map { background-image: url("map.1x.jpg") }
+@media (min-resolution: 97dpi) {
+	html.avif #map { background-image: url("map.2x.avif") }
+	html.jpeg #map { background-image: url("map.2x.jpg") }
 }
 
 #map > * {
