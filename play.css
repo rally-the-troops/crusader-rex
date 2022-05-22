@@ -290,36 +290,37 @@ body.shift .block.known:hover {
 
 #battle {
 	background-color: tan;
-	min-width: 700px;
 }
 #battle_message {
 	background-color: gainsboro;
-	text-align: center;
-	border-top: 1px solid black;
 }
 #battle_header {
 	background-color: steelblue;
 	color: white;
-	text-align: center;
-	border-bottom: 1px solid black;
 }
-.battle_menu {
-	margin: 5px 5px;
+#FR, #ER {
+	background-color: #bda27e;
+	min-height: 0;
 }
-
-#FF, #FC, #FR, #EF, #EC, #ER { margin: 0px auto; padding: 5px; }
-#EC { margin-bottom: 10px; }
-#FC { margin-bottom: 5px; }
-body:not(.replay) #EC .battle_menu_list { min-height: 0; }
-body:not(.replay) #ER .battle_menu_list { min-height: 0; }
-body:not(.replay) #FR .battle_menu_list { min-height: 0; }
+#EC .battle_menu_list {
+	display: none;
+}
+#FC {
+	margin: 0 auto 8px auto;
+	min-height: 100px;
+}
+#EC {
+	margin: 8px auto 0 auto;
+	min-height: 80px;
+}
+#FF, #EF {
+	min-height: 96px;
+}
 
 #FC, #EC {
 	background-size: cover;
 	background-repeat: no-repeat;
-	padding: 0;
-	height: 107px;
-	padding-top: 33px;
+	padding: 33px 0 0 0;
 	border-bottom: 5px solid dimgray;
 	filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5));
 	justify-content: left;
@@ -339,10 +340,6 @@ body:not(.replay) #FR .battle_menu_list { min-height: 0; }
 #FC.c2, #EC.c2 { background-image: url('castle_2.svg'); width: 220px; }
 #FC.c3, #EC.c3 { background-image: url('castle_3.svg'); width: 300px; }
 #FC.c4, #EC.c4 { background-image: url('castle_4.svg'); width: 380px; }
-
-#FC, #EC, #FF, #EF { min-height: 107px; }
-#ER { min-height: 15px; }
-#FR { min-height: 15px; }
 
 /* CARD AND BLOCK IMAGES */
 
@@ -420,3 +417,23 @@ body:not(.replay) #FR .battle_menu_list { min-height: 0; }
 .known.block_95{background-image:url(blocks/block_95.png)}
 .known.block_96{background-image:url(blocks/block_96.png)}
 .known.block_97{background-image:url(blocks/block_97.png)}
+
+/* MOBILE PHONE LAYOUT */
+
+@media (max-width: 640px) {
+	.card {
+		width: 112px !important;
+		height: 175px !important;
+		border-radius: 6px !important;
+	}
+	.role_info {
+		margin: 0 auto !important;
+		padding: 15px 0 !important;
+	}
+	.role_info .card {
+		margin: 0 auto !important;
+	}
+	.hand {
+		min-height: 175px;
+	}
+}
