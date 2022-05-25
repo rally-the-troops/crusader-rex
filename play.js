@@ -63,9 +63,9 @@ function on_log(text) {
 
 	if (text.match(/^~ .* ~$/))
 		p.className = 'br', text = text.substring(2, text.length-2);
-	else if (text.match(/^Start Frank turn/))
+	else if (text.match(/^Start Franks/))
 		p.className = 'F';
-	else if (text.match(/^Start Saracen turn/))
+	else if (text.match(/^Start Saracens/))
 		p.className = 'S';
 	else if (text.match(/^Start /))
 		p.className = 'st', text = text.replace(/\.$/, "");
