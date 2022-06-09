@@ -2810,7 +2810,7 @@ function resume_field_battle() {
 	if (is_friendly_battle_field()) {
 		print_retreat_summary();
 		log("Defending main force was eliminated.");
-		log(game.active + " are now the defender.");
+		log("Battlefield control changed.");
 		game.attacker[game.where] = enemy(game.active);
 		// The new defender takes control of the empty castle
 		if (!is_under_siege(game.where))
